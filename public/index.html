@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>和平精英 经典海岛 · 苟分点位图</title>
+  <meta name="description" content="和平精英经典海岛地图苟分点位实战攻略，点击原地图上的标记即可查看每个点位详情。" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">ERANGEL</span>
+      <div class="brand-text">
+        <h1>经典海岛 · 苟分点位图</h1>
+        <p>点击地图上的标记查看每个苟分点详情</p>
+      </div>
+    </div>
+
+    <div class="tools">
+      <div class="search">
+        <input id="search" type="search" placeholder="搜索点位 / 地名，如：矿场、屋顶、悬崖" autocomplete="off" />
+      </div>
+      <div class="view-toggle" role="tablist" aria-label="视图切换">
+        <button class="view-btn is-active" data-view="map" type="button">地图</button>
+        <button class="view-btn" data-view="list" type="button">列表</button>
+      </div>
+      <button id="addBtn" class="add-btn" type="button">＋ 新建苟分点</button>
+    </div>
+  </header>
+
+  <nav class="filters" aria-label="点位类型筛选">
+    <button class="chip is-active" data-type="all" type="button">全部 <em id="countAll"></em></button>
+  </nav>
+
+  <main class="stage">
+    <section id="mapView" class="map-view">
+      <div class="map-frame">
+        <div id="mapCanvas" class="map-canvas">
+          <img class="base-map" src="map.webp" alt="和平精英经典海岛地图" draggable="false" />
+          <div id="markerLayer" class="marker-layer"></div>
+        </div>
+
+        <div class="zoom-controls">
+          <button type="button" id="zoomIn" aria-label="放大">＋</button>
+          <button type="button" id="zoomOut" aria-label="缩小">－</button>
+          <button type="button" id="zoomReset" aria-label="重置">↺</button>
+        </div>
+
+        <div class="zoom-hint">滚轮缩放 · 按住拖动</div>
+
+        <div class="map-legend">
+          <span class="legend-title">图例</span>
+          <div id="legendItems" class="legend-items"></div>
+        </div>
+
+        <div class="map-note">点位为大致区域，非精确坐标</div>
+      </div>
+    </section>
+
+    <section id="listView" class="list-view" hidden>
+      <div id="cardGrid" class="card-grid"></div>
+      <p id="emptyHint" class="empty-hint" hidden>没有匹配的点位，换个关键词试试。</p>
+    </section>
+  </main>
+
+  <section class="guide">
+    <h2>更多</h2>
+
+    <div class="guide-block">
+      <h3 class="guide-sub">抗毒要点</h3>
+      <p class="guide-note">以下为满状态（满血满能量）在毒圈外的存活时间，用于计算扛毒搜药和进圈的余量。</p>
+
+      <div class="poison-wrap">
+        <table class="poison-table">
+          <thead>
+            <tr>
+              <th>圈数</th>
+              <th>距离 / 状态</th>
+              <th>满状态存活</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 圈</td>
+              <td>毒外满状态</td>
+              <td class="time">190 秒</td>
+            </tr>
+            <tr>
+              <td>2 圈</td>
+              <td>毒外满状态</td>
+              <td class="time">150 秒</td>
+            </tr>
+            <tr>
+              <td>3 圈</td>
+              <td>毒外满状态</td>
+              <td class="time">120 秒</td>
+            </tr>
+            <tr>
+              <td>4 圈</td>
+              <td>447 米内</td>
+              <td class="time">22 秒</td>
+            </tr>
+            <tr>
+              <td>4 圈</td>
+              <td>220 米内</td>
+              <td class="time">32 秒</td>
+            </tr>
+            <tr>
+              <td>5 圈</td>
+              <td>离圈 165 米内</td>
+              <td class="time">15 秒</td>
+            </tr>
+            <tr>
+              <td>5 圈</td>
+              <td>离圈 80 米内</td>
+              <td class="time">21 秒</td>
+            </tr>
+            <tr>
+              <td>6 圈</td>
+              <td>离圈 31 米内</td>
+              <td class="time">13 秒</td>
+            </tr>
+            <tr>
+              <td>7 圈</td>
+              <td>不在安全距离</td>
+              <td class="time">7.2 秒</td>
+            </tr>
+            <tr>
+              <td>8 圈</td>
+              <td>离圈任意距离</td>
+              <td class="time">10 秒</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="poison-tips">
+        <li>1、2、3 圈不用管，用于搜药。</li>
+        <li>4 圈开始跳秒，4 圈缩完前进到 447 米。</li>
+        <li>5 圈缩完前进到 165 米。</li>
+        <li>6 圈可以不用进，直接在 5 圈的位置原地打止痛药。</li>
+        <li>4、5、6 圈不在安全距离：7.2 秒（跳秒）。</li>
+        <li>8 圈无论离圈多远：10 秒（回秒）。</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer">
+    点位与打法为社区经验整理，随版本可能变化，请以当前游戏内实际地形为准。
+  </footer>
+
+  <div id="backdrop" class="backdrop" hidden></div>
+  <aside id="detail" class="detail" aria-hidden="true">
+    <button id="detailClose" class="detail-close" type="button" aria-label="关闭">×</button>
+    <div id="detailBody" class="detail-body"></div>
+  </aside>
+
+  <div id="placeHint" class="place-hint" hidden>点击地图上要新建苟分点的位置</div>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="modalClose" class="detail-close" type="button" aria-label="关闭">×</button>
+      <h2 id="modalTitle">新建苟分点</h2>
+
+      <form id="pointForm" class="point-form">
+        <label class="field">
+          <span>名称 <i>*</i></span>
+          <input id="fName" type="text" required maxlength="24" placeholder="如：矿场仓库旁漏斗" />
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>所属区域</span>
+            <input id="fRegion" type="text" maxlength="16" list="regionList" placeholder="如：矿场" />
+            <datalist id="regionList"></datalist>
+          </label>
+          <label class="field">
+            <span>类型</span>
+            <select id="fType"></select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>风险</span>
+            <select id="fRisk">
+              <option value="低">低风险</option>
+              <option value="中" selected>中风险</option>
+              <option value="高">高风险</option>
+            </select>
+          </label>
+          <div class="field">
+            <span>坐标</span>
+            <div class="coord-box">
+              <span id="fCoord">未选择</span>
+              <button type="button" id="pickBtn" class="mini-btn">重新选点</button>
+            </div>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>详情描述</span>
+          <textarea id="fDesc" rows="3" maxlength="300" placeholder="这个点怎么个好苟法、怎么进、能看到什么"></textarea>
+        </label>
+
+        <label class="field">
+          <span>实战要点（每行一条，最多 6 条）</span>
+          <textarea id="fTips" rows="4" placeholder="从东侧楼梯上屋顶&#10;贴背坡蹲下只露半个头"></textarea>
+        </label>
+
+        <label class="field">
+          <span>图片（可多张）</span>
+          <input id="fImages" type="file" accept="image/*" multiple />
+          <div id="imgPreview" class="img-preview"></div>
+        </label>
+
+        <p id="formError" class="form-error" hidden></p>
+
+        <div class="form-actions">
+          <button type="button" id="cancelBtn" class="btn-ghost">取消</button>
+          <button type="submit" class="btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
